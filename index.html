@@ -497,7 +497,7 @@ $('exportWrongBtn').onclick = exportWrongCsv;
 loadSaved();
 
 // ===== 自动加载题库 =====
-fetch('./tiku.xlsx')  // 如果改过名字，这里要同步改
+fetch('./tiku.xlsx')  // 
   .then(res => {
       if (!res.ok) throw new Error('题库文件未找到');
       return res.arrayBuffer();
