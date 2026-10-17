@@ -495,6 +495,30 @@ $('reviewWrongBtn').onclick = ()=>{
 $('exportWrongBtn').onclick = exportWrongCsv;
 
 loadSaved();
-</script>
-</body>
-</html>
+
+// ===== 自动加载题库 =====
+fetch('./tiku.xlsx')  // 如果改过名字，这里要同步改
+  .then(res => {
+      if (!res.ok) throw new Error('题库文件未找到');
+      return res.arrayBuffer();
+  })
+  .then(data => {
+      const wb = XLSX.read(data, { type: 'array' });
+      const questions = parseWorkbook(wb);
+      if (questions.length > 0) {
+          state.allQuestions = questions;
+          state.questions = questions.slice();
+          state.current = 0;
+          state.submitted = false;
+          
+          // 隐藏上传面板，直接显示答题面板
+          $('uploadPanel').classList.add('hidden'); 
+          $('quizPanel').classList.remove('hidden');
+          $('loadInfo').textContent = `已自动加载：${questions.length} 题`;
+          
+          renderAll();
+      }
+  })
+  .catch(err => {
+      console.log("自动加载题库失败，请手动导入。错误信息：", err);
+  });
